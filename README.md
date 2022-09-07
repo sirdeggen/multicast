@@ -1,11 +1,23 @@
 # multicast
 Playground for IPv6 Payments Thoughts
 
-FF1B:: will be the multicast header for bitcoin some day we hope. 
+FF1B:: will be the multicast header for bitcoin some day we hope.
 
 > Jake Jones:
+> From [RFC 4291](https://www.rfc-editor.org/rfc/rfc4291)
+>
+> Multicast Address Format:
+
+> |   8    |  4 |  4 |                  112 bits                   |
+> +--------+----+----+---------------------------------------------+
+> |11111111|flgs|scop|                  group ID                   |
+> +--------+----+----+---------------------------------------------+
+>    FF      0/1  0-F         Anything, including a hash output
+>
 > FF denotes multicast
+
 > 0/1 (4 bits) denotes well-known or transient, respectively
+
 > (0-F) (4 bits) denotes the scope which involves #of hops etc. E.g. 2 is for link-local, E is global, etc.
 
 We need a way to start a communication channel about a particular topic. A payment between two or more parties for example.
