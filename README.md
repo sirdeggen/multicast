@@ -3,22 +3,15 @@ Playground for IPv6 Payments Thoughts
 
 FF1B:: will be the multicast header for bitcoin some day we hope.
 
-> Jake Jones:
-> From [RFC 4291](https://www.rfc-editor.org/rfc/rfc4291)
->
-> Multicast Address Format:
+> Jake Jones: From [RFC 4291](https://www.rfc-editor.org/rfc/rfc4291) Address Format:
 
-> |   8    |  4 |  4 |                  112 bits                   |
-> +--------+----+----+---------------------------------------------+
-> |11111111|flgs|scop|                  group ID                   |
-> +--------+----+----+---------------------------------------------+
->    FF      0/1  0-F         Anything, including a hash output
->
-> FF denotes multicast
-
-> 0/1 (4 bits) denotes well-known or transient, respectively
-
-> (0-F) (4 bits) denotes the scope which involves #of hops etc. E.g. 2 is for link-local, E is global, etc.
+|                 |   type    | permanence |   scope    |                                                                         groupID                                                                         |
+|:----------------|:---------:|:----------:|:----------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| meaning         | multicast | transient  | blockchain |                                                                     conversationID                                                                      |
+| hex             |    ff     |     1      |     b      |                                                           961d:82c2:d272:dfbe:2bcc:8ed5:b26b                                                            |
+| bits            | 11111111  |    0001    |    1011    | 1001 0110 0001 1101<br/>1000 0010 1100 0010 1101 0010 0111 0010<br/>1101 1111 1011 1110 0010 1011 1100 1100<br/>1000 1110 1101 0101 1011 0010 0110 1011 |                                   |
+| possible values |    FF     |    0/1     |    0-F     |                                                            Anything, including a hash output                                                            |
+| length (bits)   |     8     |     4      |     4      |                                                                           112                                                                           |
 
 We need a way to start a communication channel about a particular topic. A payment between two or more parties for example.
 
