@@ -13,23 +13,24 @@ We need a way to start a communication channel about a particular topic. A payme
 ```javascript
 const bsv = require('openspv')
 
-new MulticastAddress('some unique string')
+class MulticastAddress {
+    constructor(id) {
+        const bytes = 'ff1b' + bsv.Hash.sha512(
+            Buffer.from(id))
+            .slice(0,14)
+            .toString('hex')
+        this.ipv6 = bytes.split('').reduce((a, b) => {
+            if (a?.[a?.length - 1].length < 4) a?.[a?.length - 1].push(b)
+            else a.push([b])
+            return a
+        }, [[]]).map(x => x.join('')).join(':')
+        return this
+    }
+}
 
-// perhaps
-const bytes = 'ff1b' + bsv.Hash.sha512(
-  Buffer.from(
-    'jake_deggen_multicast' + crypto.randomBytes(4).toString('hex')
-  ))
-  .slice(0,14)
-  .toString('hex')
+new MulticastAddress('jake_deggen' + crypto.randomBytes(4).toString('hex'))
 
-const multicastAddress = bytes.split('').reduce((a, b) => {
-    if (a?.[a?.length - 1].length < 4) a?.[a?.length - 1].push(b)
-    else a.push([b])
-    return a
-}, [[]]).map(x => x.join('')).join(':')
-
-// 'ff1b:6719:7547:742b:6c78:2880:9a6d:0f98'
+// { ipv6: 'ff1b:6719:7547:742b:6c78:2880:9a6d:0f98' }
 
 ```
 
