@@ -1,0 +1,7 @@
+{
+  "name": "multicast-blockchain",
+  "version": "0.0.1",
+  "dependencies": {
+    "openspv": "^3.0.29"
+  }
+}
