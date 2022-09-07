@@ -47,3 +47,15 @@ headers: {
    purpose: 'Paying you for a thing we spoke about',
 }
 ```
+
+Then the server could respond with the ip address to converse with hereon?
+
+```javascript
+const response = new MulticastAddress(JSON.stringify({
+   from: 'dk@degggen.com',
+   purpose: 'Paying you for a thing we spoke about',
+}) + crypto.randomBytes(4).toString('hex'))
+
+// ff1b:961d:82c2:d272:dfbe:2bcc:8ed5:b26b
+
+```
