@@ -9,6 +9,6 @@ export default function handler(req, res) {
     if (a?.[a?.length - 1].length < 4) a?.[a?.length - 1].push(b)
     else a.push([b])
     return a
-  }, [[]]).map(x => x.join('')).join(':')
+  }, [[]]).map(x => x.join('')).join(':') + '\n'
   res.status(200).send(ipv6MulticastAddress)
 }
