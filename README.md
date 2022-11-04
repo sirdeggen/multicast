@@ -1,66 +1,34 @@
-# multicast
-Playground for IPv6 Payments Thoughts
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-FF1B:: will be the multicast header for bitcoin some day we hope.
+## Getting Started
 
-> Jake Jones: From [RFC 4291](https://www.rfc-editor.org/rfc/rfc4291) Address Format:
+First, run the development server:
 
-|                 |   type    | permanence |   scope    |                                                                         groupID                                                                         |
-|:----------------|:---------:|:----------:|:----------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| meaning         | multicast | transient  | blockchain |                                                                     conversationID                                                                      |
-| hex             |    ff     |     1      |     b      |                                                           961d:82c2:d272:dfbe:2bcc:8ed5:b26b                                                            |
-| bits            | 11111111  |    0001    |    1011    | 1001 0110 0001 1101<br/>1000 0010 1100 0010 1101 0010 0111 0010<br/>1101 1111 1011 1110 0010 1011 1100 1100<br/>1000 1110 1101 0101 1011 0010 0110 1011 |                                   |
-| possible values |    ff     |    0/1     |    0-f     |                                                            Anything, including a hash output                                                            |
-| length (bits)   |     8     |     4      |     4      |                                                                           112                                                                           |
-
-We need a way to start a communication channel about a particular topic. A payment between two or more parties for example.
-
-```javascript
-const bsv = require('openspv')
-
-class MulticastAddress {
-    constructor(id) {
-        const bytes = 'ff1b' + bsv.Hash.sha512(
-            Buffer.from(id))
-            .slice(0,14)
-            .toString('hex')
-        this.ipv6 = bytes.split('').reduce((a, b) => {
-            if (a?.[a?.length - 1].length < 4) a?.[a?.length - 1].push(b)
-            else a.push([b])
-            return a
-        }, [[]]).map(x => x.join('')).join(':')
-        return this
-    }
-}
-
-new MulticastAddress('jake_deggen' + crypto.randomBytes(4).toString('hex'))
-
-// { ipv6: 'ff1b:6719:7547:742b:6c78:2880:9a6d:0f98' }
-
+```bash
+npm run dev
+# or
+yarn dev
 ```
 
-Maybe something like this could be done for a paymail capability:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-POST /api/multicast/open
-```javascript
-headers: {
-   signature: 'b83380f6e1d09411ebf49afd1a95c738686bfb2b0fe2391134f4ae3d6d77b78a'
-}
+You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
-{
-   from: 'dk@degggen.com',
-   purpose: 'Paying you for a thing we spoke about',
-}
-```
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
 
-Then the server could respond with the ip address to converse with hereon?
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-```javascript
-const response = new MulticastAddress(JSON.stringify({
-   from: 'dk@degggen.com',
-   purpose: 'Paying you for a thing we spoke about',
-}) + crypto.randomBytes(4).toString('hex'))
+## Learn More
 
-// ff1b:961d:82c2:d272:dfbe:2bcc:8ed5:b26b
+To learn more about Next.js, take a look at the following resources:
 
-```
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
