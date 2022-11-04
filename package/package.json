@@ -1,0 +1,23 @@
+{
+  "name": "bsv-multicast-address",
+  "version": "1.0.0",
+  "description": "a quick way to derive ipv6 mutlicast addresses from a pubkey",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sirdeggen/multicast.git"
+  },
+  "keywords": [
+    "multicast",
+    "bsv"
+  ],
+  "author": "deggen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sirdeggen/multicast/issues"
+  },
+  "homepage": "https://github.com/sirdeggen/multicast#readme"
+}
