@@ -1,10 +1,10 @@
 {
   "name": "bsv-multicast-address",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "a quick way to derive ipv6 mutlicast addresses from a pubkey",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "generate": "node index.js"
   },
   "repository": {
     "type": "git",
