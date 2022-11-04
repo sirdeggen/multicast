@@ -4,7 +4,7 @@
   "description": "a quick way to derive ipv6 mutlicast addresses from a pubkey",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "repository": {
     "type": "git",
@@ -18,6 +18,5 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/sirdeggen/multicast/issues"
-  },
-  "homepage": "https://github.com/sirdeggen/multicast#readme"
+  }
 }
