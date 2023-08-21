@@ -1,57 +1,64 @@
 package main
 
 import (
-	"fmt"
+	"flag"
+	"log"
 	"net"
+	"net/http"
+	"strings"
 	"time"
-
-	"golang.org/x/net/ipv6"
 )
 
 func main() {
-	// set up interface
-	en0, err := net.InterfaceByName("en0")
+	var multicastAddress string
+	var httpsEndpoint string
+
+	// Define command line flags
+	flag.StringVar(&multicastAddress, "multicast", "", "Multicast group address")
+	flag.StringVar(&httpsEndpoint, "endpoint", "", "HTTPS endpoint URL")
+	flag.Parse()
+
+	if multicastAddress == "" || httpsEndpoint == "" {
+		log.Fatal("Multicast address and HTTPS endpoint are required")
+	}
+
+	// Specify the network interface by name (replace "eth0" with your interface name)
+	iface, err := net.InterfaceByName("en0")
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalf("Failed to get network interface: %v", err)
 	}
-	group := net.ParseIP("ff0e::b:0")
-	fmt.Println("group", group)
 
-	c, err := net.ListenPacket("udp6", "[::]:4201")
+	addr, err := net.ResolveUDPAddr("udp6", multicastAddress)
 	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println("c", c)
-	defer c.Close()
-
-	packetConnection := ipv6.NewPacketConn(c)
-	if err := packetConnection.JoinGroup(en0, &net.UDPAddr{IP: group, Port: 4201}); err != nil {
-		fmt.Println(err)
+		log.Fatalf("Failed to resolve UDP address: %v", err)
 	}
 
-	go func(p *ipv6.PacketConn) {
-		for {
-			// fmt.Println("reading")
-			b := make([]byte, 1500)
-			n, _, src, err := p.ReadFrom(b)
-			if err != nil {
-				fmt.Println(err)
-			}
-			// if cm.Dst.IsMulticast() {
-			fmt.Printf("from %v: %s\n", src, b[:n])
-			// }
-		}
-	}(packetConnection)
+	conn, err := net.ListenMulticastUDP("udp6", iface, addr)
+	if err != nil {
+		log.Fatalf("Failed to listen on multicast address: %v", err)
+	}
 
+	// Set the read deadline to maintain perpetual connection
+	_ = conn.SetReadDeadline(time.Time{})
+
+	buffer := make([]byte, 1024)
 	for {
-		// fmt.Println("writing")
-		time.Sleep(time.Second)
-		data := []byte("Hello, multicast world!")
-		dst := &net.UDPAddr{IP: group, Port: 4201}
-		wcm := ipv6.ControlMessage{TrafficClass: 0xe0, HopLimit: 1}
-		if _, err := packetConnection.WriteTo(data, &wcm, dst); err != nil {
-			fmt.Println(err)
+		// Read from the multicast connection
+		read, src, err := conn.ReadFromUDP(buffer)
+		if err != nil {
+			log.Fatalf("Failed to read from the multicast connection: %v", err)
 		}
-	}
 
+		// Relay this data to the HTTPS endpoint
+		data := strings.NewReader(string(buffer[:read]))
+		resp, err := http.Post(httpsEndpoint, "text/plain", data)
+		if err != nil {
+			log.Fatalf("Failed to POST to HTTPS endpoint: %v", err)
+		}
+
+		// We are not doing anything with the response for now, so close it
+		defer resp.Body.Close()
+
+		log.Printf("Received message from %s and relayed to HTTPS endpoint", src.String())
+	}
 }
